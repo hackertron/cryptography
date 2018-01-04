@@ -7,7 +7,6 @@ from __future__ import absolute_import, division, print_function
 import binascii
 import itertools
 import os
-
 from binascii import hexlify
 
 import pytest
@@ -21,6 +20,7 @@ from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.asymmetric.utils import (
     Prehashed, encode_dss_signature
 )
+from cryptography.utils import CryptographyDeprecationWarning
 
 from .fixtures_ec import EC_KEY_SECP384R1
 from ...doubles import DummyKeySerializationEncryption
@@ -351,13 +351,13 @@ class TestECDSAVectors(object):
         pkey = key.public_key()
         assert pkey
 
-        signer = pytest.deprecated_call(key.signer, ec.ECDSA(hash_type()))
+        with pytest.warns(CryptographyDeprecationWarning):
+            signer = key.signer(ec.ECDSA(hash_type()))
         signer.update(b"YELLOW SUBMARINE")
         signature = signer.finalize()
 
-        verifier = pytest.deprecated_call(
-            pkey.verifier, signature, ec.ECDSA(hash_type())
-        )
+        with pytest.warns(CryptographyDeprecationWarning):
+            verifier = pkey.verifier(signature, ec.ECDSA(hash_type()))
         verifier.update(b"YELLOW SUBMARINE")
         verifier.verify()
 
@@ -514,12 +514,11 @@ class TestECDSAVectors(object):
 
         signature = encode_dss_signature(vector['r'], vector['s'])
 
-        verifier = key.verifier(
+        key.verify(
             signature,
+            vector['message'],
             ec.ECDSA(hash_type())
         )
-        verifier.update(vector['message'])
-        verifier.verify()
 
     @pytest.mark.parametrize(
         "vector",
@@ -543,17 +542,19 @@ class TestECDSAVectors(object):
 
         signature = encode_dss_signature(vector['r'], vector['s'])
 
-        verifier = key.verifier(
-            signature,
-            ec.ECDSA(hash_type())
-        )
-        verifier.update(vector['message'])
-
         if vector["fail"] is True:
             with pytest.raises(exceptions.InvalidSignature):
-                verifier.verify()
+                key.verify(
+                    signature,
+                    vector['message'],
+                    ec.ECDSA(hash_type())
+                )
         else:
-            verifier.verify()
+            key.verify(
+                signature,
+                vector['message'],
+                ec.ECDSA(hash_type())
+            )
 
     def test_sign(self, backend):
         _skip_curve_unsupported(backend, ec.SECP256R1())
