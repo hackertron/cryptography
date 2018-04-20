@@ -148,6 +148,67 @@ def downstreams = [
             inv test
         """
     ],
+    [
+        downstreamName: 'aws-encryption-sdk',
+        label: 'docker',
+        imageName: 'pyca/cryptography-runner-ubuntu-rolling',
+        script: """#!/bin/bash -xe
+            git clone --depth=1 https://github.com/awslabs/aws-encryption-sdk-python
+            cd aws-encryption-sdk-python
+            virtualenv .venv
+            source .venv/bin/activate
+            pip install ../cryptography
+            pip install -r test/requirements.txt
+            pip install -e .
+            pytest -m local -l
+        """
+    ],
+    [
+        downstreamName: 'certbot',
+        label: 'docker',
+        imageName: 'pyca/cryptography-runner-ubuntu-rolling',
+        script: """#!/bin/bash -xe
+            git clone --depth=1 https://github.com/certbot/certbot
+            cd certbot
+            virtualenv .venv
+            source .venv/bin/activate
+            pip install ../cryptography
+            pip install pytest pytest-mock mock
+            pip install -e acme
+            pip install -e .
+            pytest certbot/tests
+            pytest acme
+        """
+    ],
+    [
+        downstreamName: 'certbot-josepy',
+        label: 'docker',
+        imageName: 'pyca/cryptography-runner-ubuntu-rolling',
+        script: """#!/bin/bash -xe
+            git clone --depth=1 https://github.com/certbot/josepy
+            cd josepy
+            virtualenv .venv
+            source .venv/bin/activate
+            pip install ../cryptography
+            pip install -e .[tests]
+            pytest src
+        """
+    ],
+    [
+        downstreamName: 'urllib3',
+        label: 'docker',
+        imageName: 'pyca/cryptography-runner-ubuntu-rolling',
+        script: """#!/bin/bash -xe
+            git clone --depth 1 https://github.com/shazow/urllib3
+            cd urllib3
+            virtualenv .venv
+            source .venv/bin/activate
+            pip install ../cryptography
+            pip install -r ./dev-requirements.txt
+            pip install -e .[socks]
+            pytest test
+        """
+    ],
 ]
 
 def checkout_git(label) {

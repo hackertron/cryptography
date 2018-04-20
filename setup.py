@@ -48,11 +48,11 @@ setup_requirements = []
 if platform.python_implementation() == "PyPy":
     if sys.pypy_version_info < (5, 3):
         raise RuntimeError(
-            "cryptography 1.9 is not compatible with PyPy < 5.3. Please "
-            "upgrade PyPy to use this library."
+            "cryptography is not compatible with PyPy < 5.3. Please upgrade "
+            "PyPy to use this library."
         )
 else:
-    setup_requirements.append("cffi>=1.7")
+    setup_requirements.append("cffi>=1.7,!=1.11.3")
 
 test_requirements = [
     "pytest>=3.2.1,!=3.3.0",
@@ -296,12 +296,14 @@ setup(
         ":platform_python_implementation != 'PyPy'": ["cffi >= 1.7"],
 
         "test": test_requirements,
+        "docs": [
+            "sphinx >= 1.6.5",
+            "sphinx_rtd_theme",
+        ],
         "docstest": [
             "doc8",
             "pyenchant >= 1.6.11",
             "readme_renderer >= 16.0",
-            "sphinx >= 1.6.5",
-            "sphinx_rtd_theme",
             "sphinxcontrib-spelling >= 4.0.1",
         ],
         "pep8test": [

@@ -129,6 +129,8 @@ Key exchange
   ``vectors/cryptography_vectors/asymmetric/DH/dhpub_rfc5114_2.der`` contains
   are the above parameters and keys in DER format.
 
+* ``vectors/cryptoraphy_vectors/asymmetric/ECDH/brainpool.txt`` contains
+  Brainpool vectors from :rfc:`7027`.
 
 X.509
 ~~~~~
@@ -174,6 +176,8 @@ X.509
   a distinguished name with an ``x500UniqueIdentifier``.
 * ``utf8-dnsname.pem`` - A certificate containing non-ASCII characters in the
   DNS name entries of the SAN extension.
+* ``badasn1time.pem`` - A certificate containing an incorrectly specified
+  UTCTime in its validity->not_after.
 
 Custom X.509 Vectors
 ~~~~~~~~~~~~~~~~~~~~
@@ -426,6 +430,7 @@ Key wrapping
 ~~~~~~~~~~~~
 
 * AES key wrap (AESKW) and 3DES key wrap test vectors from `NIST CAVP`_.
+* AES key wrap with padding vectors from `Botan's key wrap vectors`_.
 
 Recipes
 ~~~~~~~
@@ -476,8 +481,8 @@ Creating test vectors
 When official vectors are unavailable ``cryptography`` may choose to build
 its own using existing vectors as source material.
 
-Custom Symmetric Vectors
-~~~~~~~~~~~~~~~~~~~~~~~~
+Created Vectors
+~~~~~~~~~~~~~~~
 
 .. toctree::
     :maxdepth: 1
@@ -486,6 +491,8 @@ Custom Symmetric Vectors
     custom-vectors/cast5
     custom-vectors/idea
     custom-vectors/seed
+    custom-vectors/hkdf
+
 
 If official test vectors appear in the future the custom generated vectors
 should be discarded.
@@ -537,3 +544,4 @@ header format (substituting the correct information):
 .. _`unknown signature OID`: https://bugzilla.mozilla.org/show_bug.cgi?id=405966
 .. _`botan`: https://github.com/randombit/botan/blob/57789bdfc55061002b2727d0b32587612829a37c/src/tests/data/pubkey/dh.vec
 .. _`DHKE`: https://sandilands.info/sgordon/diffie-hellman-secret-key-exchange-with-openssl
+.. _`Botan's key wrap vectors`: https://github.com/randombit/botan/blob/737f33c09a18500e044dca3e2ae13bd2c08bafdd/src/tests/data/keywrap/nist_key_wrap.vec
